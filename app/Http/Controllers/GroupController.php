@@ -57,17 +57,18 @@ class GroupController extends Controller
 	}
 
 	public function show($group) {
-		$html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$group);
-		$crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$group);
+		$gr = $group;
+		$group = mb_strtoupper(urldecode($group));
+		$html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
+		$crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
 		$crawler->addHtmlContent($html, 'UTF-8');
 		$days = array();
 		$days[0] = $this->getTimettableForWeek(1, $crawler);
 		$days[1] = $this->getTimettableForWeek(2, $crawler);
-		$group = urldecode($group);
-		dd([
-				'group' => $group,
-				'timetable' => $days
-			]);
+		// dd([
+		// 		'group' => $group,
+		// 		'timetable' => $days
+		// 	]);
 		return  response()
 			->json([
 				'group' => $group,
