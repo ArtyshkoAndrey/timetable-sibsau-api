@@ -65,9 +65,12 @@ class GroupController extends Controller
               $days[$count]->lessons[$i]->type = preg_split('/[\()]/', $node->filter('li')->first()->text())[1];
               $days[$count]->lessons[$i]->teacher = $node->filter('li')->eq(1)->text();
               $days[$count]->lessons[$i]->audience = $node->filter('li')->last()->text();
-              if (str_split($days[$count]->lessons[$i]->audience, 1)[1] == 'подгруппа') {
-                $days[$count]->lessons[$i]->subGroup = $days[$count]->lessons[$i]->audience
-                $days[$count]->lessons[$i]->audience = $node->filter('li')->eq(2)->text();
+              // dd(explode(' ', '12123123'));
+              if (count(explode(' ', $days[$count]->lessons[$i]->audience)) > 1) {
+                if (explode(' ', $days[$count]->lessons[$i]->audience)[1] === 'подгруппа') {
+                  $days[$count]->lessons[$i]->subGroup = $days[$count]->lessons[$i]->audience;
+                  $days[$count]->lessons[$i]->audience = $node->filter('li')->eq(2)->text();
+                }
               }
             } else if (count($node->filter('.row')->children()) == 2) {
             $days[$count]->lessons[$i] = array();
