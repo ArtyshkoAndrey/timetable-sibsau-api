@@ -33,6 +33,7 @@ class GroupController extends Controller
         global $exams;
         $exams[$i] = (object) array();
         $exams[$i]->date = trim($node->filter('.name.text-center > div')->text()); // ЧИсло
+        $exams[$i]->date = strtok(str_replace("\r", "", str_replace("\n", "", $exams[$i]->date)), " ");
         $exams[$i]->time = trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.body > .line > .time.text-center')->text()))); // Время начало экзамена 
         $exams[$i]->name = $node->filter('li')->first()->filter('span')->text(); // Наименование
         $exams[$i]->teacher = $node->filter('li')->eq(1)->text(); // Препод
