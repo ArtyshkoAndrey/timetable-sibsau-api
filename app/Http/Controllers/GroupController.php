@@ -65,20 +65,24 @@ class GroupController extends Controller
               $days[$count]->lessons[$i]->type = preg_split('/[\()]/', $node->filter('li')->first()->text())[1];
               $days[$count]->lessons[$i]->teacher = $node->filter('li')->eq(1)->text();
               $days[$count]->lessons[$i]->audience = $node->filter('li')->last()->text();
-              } else if (count($node->filter('.row')->children()) == 2) {
-              $days[$count]->lessons[$i] = array();
-              $days[$count]->lessons[$i][0] = (object) array();
-              $days[$count]->lessons[$i][1] = (object) array();
-              $days[$count]->lessons[$i]['time'] = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
-              for ($j = 0; $j < 2; $j++) {
-                // dd($days[$count]->lessons[$i]->time);
-                $days[$count]->lessons[$i][$j]->name = $node->filter('.list-unstyled')->eq($j)->filter('span')->text();
-                $days[$count]->lessons[$i][$j]->subGroup = $node->filter('.list-unstyled')->eq($j)->filter('li')->first()->text();
-                $days[$count]->lessons[$i][$j]->type = preg_split('/[\()]/', $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(1)->text())[1];
-                $days[$count]->lessons[$i][$j]->teacher = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->text();
-                $days[$count]->lessons[$i][$j]->audience = $node->filter('.list-unstyled')->eq($j)->filter('li')->last()->text();
+              if (str_split($days[$count]->lessons[$i]->audience, 1)[1] == 'подгруппа') {
+                $days[$count]->lessons[$i]->subGroup = $days[$count]->lessons[$i]->audience
+                $days[$count]->lessons[$i]->audience = $node->filter('li')->eq(2)->text();
               }
+            } else if (count($node->filter('.row')->children()) == 2) {
+            $days[$count]->lessons[$i] = array();
+            $days[$count]->lessons[$i][0] = (object) array();
+            $days[$count]->lessons[$i][1] = (object) array();
+            $days[$count]->lessons[$i]['time'] = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
+            for ($j = 0; $j < 2; $j++) {
+                // dd($days[$count]->lessons[$i]->time);
+              $days[$count]->lessons[$i][$j]->name = $node->filter('.list-unstyled')->eq($j)->filter('span')->text();
+              $days[$count]->lessons[$i][$j]->subGroup = $node->filter('.list-unstyled')->eq($j)->filter('li')->first()->text();
+              $days[$count]->lessons[$i][$j]->type = preg_split('/[\()]/', $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(1)->text())[1];
+              $days[$count]->lessons[$i][$j]->teacher = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->text();
+              $days[$count]->lessons[$i][$j]->audience = $node->filter('.list-unstyled')->eq($j)->filter('li')->last()->text();
             }
+          }
           });
       });
     return $days;
