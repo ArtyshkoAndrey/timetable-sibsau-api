@@ -86,14 +86,26 @@ class GroupController extends Controller
   public function show($group) {
     // $gr = $group;
     $group = mb_strtoupper(urldecode($group));
-    $gr = urlencode($group);
+    $gr = rawurlencode($group);
     $html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
     $crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
     $crawler->addHtmlContent($html, 'UTF-8');
     $days = array();
-    $days[0] = $this->getTimettableForWeek(1, $crawler);
-    $days[1] = $this->getTimettableForWeek(2, $crawler);
-    $exams = $this->getTimettableForExam($crawler);
+    try {
+      $days[0] = $this->getTimettableForWeek(1, $crawler);
+    } catch (\InvalidArgumentException $e) {
+      $days[0] = null;
+    }
+    try {
+      $days[1] = $this->getTimettableForWeek(2, $crawler);
+    } catch (\InvalidArgumentException $e) {
+      $days[1] = null;
+    }
+    try {
+      $exams = $this->getTimettableForExam($crawler);
+    } catch (\InvalidArgumentException $e) {
+      $exams = null;
+    }
     // dd([
     //    'group' => $group,
     //    'timetable' => $days
