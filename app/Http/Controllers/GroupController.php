@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Symfony\Component\DomCrawler\Crawler;
+use App\Ip;
 
 class GroupController extends Controller
 {
@@ -93,6 +94,22 @@ class GroupController extends Controller
 
   public function show($group) {
     // $gr = $group;
+    $ipAddress = '';
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ('' !== trim($_SERVER['HTTP_X_FORWARDED_FOR']))) {
+      $ipAddress = trim($_SERVER['HTTP_X_FORWARDED_FOR']);
+    } else {
+      if (isset($_SERVER['REMOTE_ADDR']) && ('' !== trim($_SERVER['REMOTE_ADDR']))) {
+        $ipAddress = trim($_SERVER['REMOTE_ADDR']);
+      }
+    }
+    // dd($ipAddress);
+    try {
+      $ip = new Ip();
+      $ip->ip = $ipAddress;
+      $ip->save();
+    } catch(\Illuminate\Database\QueryException $e) {
+    
+    }
     $group = mb_strtoupper(urldecode($group));
     $gr = rawurlencode($group);
     $html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
