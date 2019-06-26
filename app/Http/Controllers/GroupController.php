@@ -65,6 +65,7 @@ class GroupController extends Controller
               $days[$count]->lessons[$i]->name = $node->filter('li')->first()->filter('span')->text();
               $days[$count]->lessons[$i]->type = preg_split('/[\()]/', $node->filter('li')->first()->text())[1];
               $days[$count]->lessons[$i]->teacher = $node->filter('li')->eq(1)->text();
+              $days[$count]->lessons[$i]->teacherlink = $node->filter('li')->eq(1)->filter('a')->link()->getUri();
               $days[$count]->lessons[$i]->audience = $node->filter('li')->last()->text();
               // dd(explode(' ', '12123123'));
               if (count(explode(' ', $days[$count]->lessons[$i]->audience)) > 1) {
@@ -84,6 +85,7 @@ class GroupController extends Controller
               $days[$count]->lessons[$i][$j]->subGroup = $node->filter('.list-unstyled')->eq($j)->filter('li')->first()->text();
               $days[$count]->lessons[$i][$j]->type = preg_split('/[\()]/', $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(1)->text())[1];
               $days[$count]->lessons[$i][$j]->teacher = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->text();
+              $days[$count]->lessons[$i][$j]->teacherlink = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->filter('a')->link()->getUri();
               $days[$count]->lessons[$i][$j]->audience = $node->filter('.list-unstyled')->eq($j)->filter('li')->last()->text();
             }
           }

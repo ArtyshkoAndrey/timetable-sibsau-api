@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Goutte\Client;
 
 class AbiturController extends Controller
 {
@@ -17,26 +18,15 @@ class AbiturController extends Controller
   }
 
   public function show() {
-    $pdf_file = 'C:\Users\Andrey\Downloads\123.pdf';
-    if (!is_readable($pdf_file)) {
-      print("Error: file does not exist or is not readable: $pdf_file\n");
-      return;
-    }
-    $c = curl_init();
-    $cfile = curl_file_create($pdf_file, 'application/pdf');
-    $apikey = 'ntqeatyesv0t'; // from https://pdftables.com/api
-    curl_setopt($c, CURLOPT_URL, "https://pdftables.com/api?key=$apikey&format=xlsx-single");
-    curl_setopt($c, CURLOPT_POSTFIELDS, array('file' => $cfile));
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($c, CURLOPT_FAILONERROR,true);
-    curl_setopt($c, CURLOPT_ENCODING, "gzip,deflate");
-    $result = curl_exec($c);
-    if (curl_errno($c) > 0) {
-        print('Error calling PDFTables: '.curl_error($c).PHP_EOL);
-    } else {
-      // save the CSV we got from PDFTables to a file
-      file_put_contents ($pdf_file . ".csv", $result);
-    }
-    curl_close($c);
+    $client = new Client();
+    $crawler = $client->request('GET', 'https://timetable.pallada.sibsau.ru/');
+
+    $form = $crawler->selectButton('search_btn')->form();
+    $form['query'] = 'Чмых';
+    // dd($form);
+    // $crawler = $client->submit($form);
+    dd(count($crawler->filter('ul .typeahead > li')));
+    dd($crawler);
+    dd($crawler);
   }
 }
