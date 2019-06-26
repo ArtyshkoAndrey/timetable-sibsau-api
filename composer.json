@@ -9,7 +9,8 @@
         "laravel/lumen-framework": "5.8.*",
         "symfony/css-selector": "^4.2",
         "symfony/dom-crawler": "^4.2",
-        "vlucas/phpdotenv": "^3.3"
+        "vlucas/phpdotenv": "^3.3",
+        "smalot/pdfparser": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

@@ -16,3 +16,4 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/group/{group}', 'GroupController@show');
+$router->get('/abitur', 'AbiturController@show');
