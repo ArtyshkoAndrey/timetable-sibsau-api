@@ -16,4 +16,5 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/group/{group}', 'GroupController@show');
-$router->get('/abitur', 'AbiturController@show');
+$router->get('/parse/group/{group}', 'ParseController@group');
+$router->get('/parse/teacher/{teacher}', 'ParseController@teacher');
