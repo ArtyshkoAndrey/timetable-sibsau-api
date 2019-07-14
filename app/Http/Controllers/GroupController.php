@@ -119,7 +119,7 @@ class GroupController extends Controller
 
   public function searchGroup ($text) {
     // dd('%'.$text.'%');
-    $groups = Group::all();
+    $groups = Group::where('name', 'LIKE','%'.$text.'%')->get();
     return  response()
       ->json([
         'groups' => $groups->toArray(),
