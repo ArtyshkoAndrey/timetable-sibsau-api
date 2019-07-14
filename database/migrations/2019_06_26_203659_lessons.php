@@ -17,6 +17,7 @@ class Lessons extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('group_id');
+            $table->integer('prefLesson_id');
             $table->integer('teacher_id');
             $table->string('audience');
             $table->json('time');

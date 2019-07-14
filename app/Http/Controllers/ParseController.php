@@ -105,7 +105,6 @@ class ParseController extends Controller
             $days[$count]->lessons[$i] = array();
             $days[$count]->lessons[$i][0] = (object) array();
             $days[$count]->lessons[$i][1] = (object) array();
-            $days[$count]->lessons[$i]['time'] = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
             for ($j = 0; $j < 2; $j++) {
               $days[$count]->lessons[$i][$j]->name = $node->filter('.list-unstyled')->eq($j)->filter('span')->text();
               $days[$count]->lessons[$i][$j]->subGroup = $node->filter('.list-unstyled')->eq($j)->filter('li')->first()->text();
@@ -113,6 +112,7 @@ class ParseController extends Controller
               $days[$count]->lessons[$i][$j]->teacher = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->text();
               $days[$count]->lessons[$i][$j]->teacherlink = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->filter('a')->link()->getUri();
               $days[$count]->lessons[$i][$j]->audience = $node->filter('.list-unstyled')->eq($j)->filter('li')->last()->text();
+              $days[$count]->lessons[$i][$j]->time = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
             }
           }
           });

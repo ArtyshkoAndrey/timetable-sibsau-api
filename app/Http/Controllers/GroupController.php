@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Ip;
+use App\Lesson;
+use App\Group;
 
 class GroupController extends Controller
 {
@@ -23,79 +25,6 @@ class GroupController extends Controller
       'Пятница'     => 5,
       'Суббота'     => 6,
     ];
-    // dump($this->arrayDays['Понедельник']);
-  }
-
-  private function getTimettableForExam($crawler) {
-    global $exams;
-    $exams = array();
-    $crawler->filter('#session_tab> div')
-      ->reduce(function (Crawler $node, $i) { // Дни экзамена
-        global $exams;
-        $exams[$i] = (object) array();
-        $exams[$i]->date = trim($node->filter('.name.text-center > div')->text()); // ЧИсло
-        $exams[$i]->date = strtok(str_replace("\r", "", str_replace("\n", "", $exams[$i]->date)), " ");
-        $exams[$i]->time = trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.body > .line > .time.text-center')->text()))); // Время начало экзамена 
-        $exams[$i]->name = $node->filter('li')->first()->filter('span')->text(); // Наименование
-        $exams[$i]->teacher = $node->filter('li')->eq(1)->text(); // Препод
-        $exams[$i]->audience = $node->filter('li')->last()->text();
-      });
-    return $exams;
-  }
-
-  private function getTimettableForWeek($num, $crawler) {
-    global $days, $count;
-    $days = array();
-    $count = 0;
-    $crawler->filter('#week_'.$num.'_tab > div')
-      ->reduce(function (Crawler $node, $i) { // Дни
-        global $days, $count;
-        $count = $i;
-        $days[$i] = (object) array();
-        $days[$i]->nameDay = trim($node->filter('.name.text-center > div')->text());
-        $days[$i]->nameDay = strtok(str_replace("\r", "", str_replace("\n", "", $days[$i]->nameDay)), " ");
-        $days[$i]->index = $this->arrayDays[$days[$i]->nameDay];
-        $days[$i]->lessons = array();
-        $node->filter('.body > .line')
-          ->reduce(function (Crawler $node, $i) { // Ленты
-            global $days, $count;
-            if (count($node->filter('.row')->children()) == 1) {
-              $days[$count]->lessons[$i] = (object) array();
-              $days[$count]->lessons[$i]->time = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
-              $days[$count]->lessons[$i]->name = $node->filter('li')->first()->filter('span')->text();
-              $days[$count]->lessons[$i]->type = preg_split('/[\()]/', $node->filter('li')->first()->text())[1];
-              $days[$count]->lessons[$i]->teacher = $node->filter('li')->eq(1)->text();
-              $days[$count]->lessons[$i]->teacherlink = $node->filter('li')->eq(1)->filter('a')->link()->getUri();
-              $days[$count]->lessons[$i]->audience = $node->filter('li')->last()->text();
-              // dd(explode(' ', '12123123'));
-              if (count(explode(' ', $days[$count]->lessons[$i]->audience)) > 1) {
-                if (explode(' ', $days[$count]->lessons[$i]->audience)[1] === 'подгруппа') {
-                  $days[$count]->lessons[$i]->subGroup = $days[$count]->lessons[$i]->audience;
-                  $days[$count]->lessons[$i]->audience = $node->filter('li')->eq(2)->text();
-                }
-              }
-            } else if (count($node->filter('.row')->children()) == 2) {
-            $days[$count]->lessons[$i] = array();
-            $days[$count]->lessons[$i][0] = (object) array();
-            $days[$count]->lessons[$i][1] = (object) array();
-            $days[$count]->lessons[$i]['time'] = preg_split('/[\-]/', trim(str_replace("\r", "", str_replace("\n", "", $node->filter('.time.text-center')->children()->first()->text()))));
-            for ($j = 0; $j < 2; $j++) {
-                // dd($days[$count]->lessons[$i]->time);
-              $days[$count]->lessons[$i][$j]->name = $node->filter('.list-unstyled')->eq($j)->filter('span')->text();
-              $days[$count]->lessons[$i][$j]->subGroup = $node->filter('.list-unstyled')->eq($j)->filter('li')->first()->text();
-              $days[$count]->lessons[$i][$j]->type = preg_split('/[\()]/', $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(1)->text())[1];
-              $days[$count]->lessons[$i][$j]->teacher = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->text();
-              $days[$count]->lessons[$i][$j]->teacherlink = $node->filter('.list-unstyled')->eq($j)->filter('li')->eq(2)->filter('a')->link()->getUri();
-              $days[$count]->lessons[$i][$j]->audience = $node->filter('.list-unstyled')->eq($j)->filter('li')->last()->text();
-            }
-          }
-          });
-      });
-    return $days;
-  }
-
-  public function show($group) {
-    // $gr = $group;
     $ipAddress = '';
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ('' !== trim($_SERVER['HTTP_X_FORWARDED_FOR']))) {
       $ipAddress = trim($_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -110,29 +39,65 @@ class GroupController extends Controller
       $ip->ip = $ipAddress;
       $ip->save();
     } catch(\Illuminate\Database\QueryException $e) {
-    
+
     }
-    $group = mb_strtoupper(urldecode($group));
-    $gr = rawurlencode($group);
-    $html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
-    $crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/2018/2/'.$gr);
-    $crawler->addHtmlContent($html, 'UTF-8');
+  }
+
+  public function show($group_id) {
+    $lessons = Lesson::where('group_id', '=', $group_id)->get();
+    // dd($lessons->where('week', '=', '1'));
     $days = array();
-    try {
-      $days[0] = $this->getTimettableForWeek(1, $crawler);
-    } catch (\InvalidArgumentException $e) {
-      $days[0] = null;
+    for ($j = 0; $j < 2; $j++) {
+      $days[$j] = array();
+      $lessonsFirstWeek = $lessons->where('week', '=', $j+1);
+      // dd($lessonsFirstWeek);
+      foreach ($this->arrayDays as $key => $value) {
+        $day = (object) array();
+        $day->index = $value;
+        $day->name = $key;
+        $day->lessons = array();
+        $lessonsKeyDay = $lessonsFirstWeek->where('day', ['index' => $value, 'name' => $key]);
+        $lessonsKeyDay->sortBy(function ($lesson, $key) {
+          return (int) $lesson->time['start'];
+        });
+        // dd($lessonsKeyDay->toArray());
+        $lessonsKeyDay = $lessonsKeyDay->values();
+        for ($i = 0; $i < count($lessonsKeyDay); $i++) {
+          if (isset($lessonsKeyDay[$i + 1])) {
+            if ($lessonsKeyDay[$i + 1]->prefLesson_id !== 0) {
+              $lessonsWithPref = array();
+              $lesson = (object) array();
+              $lesson = $lessonsKeyDay[$i]->toArray();
+              $lesson['group'] = $lessonsKeyDay[$i]->group->name;
+              $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
+              array_push($lessonsWithPref, $lesson);
+              $lesson = (object) array();
+              $lesson = $lessonsKeyDay[$i + 1]->toArray();
+              $lesson['group'] = $lessonsKeyDay[$i + 1]->group->name;
+              $lesson['teacher'] = $lessonsKeyDay[$i + 1]->teacher->initials_name;
+              array_push($lessonsWithPref, $lesson);
+              array_push($day->lessons, $lessonsWithPref);
+              $i++;
+            } else {
+              $lesson = (object) array();
+              $lesson = $lessonsKeyDay[$i]->toArray();
+              $lesson['group'] = $lessonsKeyDay[$i]->group->name;
+              $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
+              array_push($day->lessons, $lesson);
+            }
+          } else {
+            $lesson = (object) array();
+            $lesson = $lessonsKeyDay[$i]->toArray();
+            $lesson['group'] = $lessonsKeyDay[$i]->group->name;
+            $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
+            array_push($day->lessons, $lesson);
+          }
+        }
+        array_push($days[$j], $day);
+      }
     }
-    try {
-      $days[1] = $this->getTimettableForWeek(2, $crawler);
-    } catch (\InvalidArgumentException $e) {
-      $days[1] = null;
-    }
-    try {
-      $exams = $this->getTimettableForExam($crawler);
-    } catch (\InvalidArgumentException $e) {
-      $exams = null;
-    }
+    // dd($days);
+    $exams = null;
     // dd([
     //    'group' => $group,
     //    'timetable' => $days
@@ -144,9 +109,20 @@ class GroupController extends Controller
     //   ]);
     return  response()
       ->json([
-        'group' => $group,
+        'group' => Group::where('id', $group_id)->first()->name,
         'timetable' => $days,
         'exams' => $exams
+      ])
+      ->header('Content-Type', 'application/json')
+      ->header('charset', 'utf-8');
+  }
+
+  public function searchGroup ($text) {
+    // dd('%'.$text.'%');
+    $groups = Group::where('name', 'LIKE','%'.$text.'%')->get();
+    return  response()
+      ->json([
+        'groups' => $groups->toArray(),
       ])
       ->header('Content-Type', 'application/json')
       ->header('charset', 'utf-8');
