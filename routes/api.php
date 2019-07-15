@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 Route::middleware('api')->group(function () {
   Route::get('/group/{id}', 'GroupController@show');
+  Route::get('/posts', 'PostController@all');
+  Route::get('/post/{id}', 'PostController@post');
   Route::get('/group/search/{text}/{count}', 'GroupController@searchGroup');
   Route::get('/parse/group/{id}', 'ParseController@group');
   Route::get('/parse/teacher/{id}', 'ParseController@teacher');
