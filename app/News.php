@@ -15,7 +15,7 @@ class News extends Model
   protected $primaryKey = 'id';
   // protected $guarded = ['id'];
   protected $fillable = ['title','summary','body','avatar', 'user_id'];
-
+  protected $with = ['user'];
   public function user()
   {
     return $this->hasOne('App\Models\BackpackUser', 'id', 'user_id');
@@ -26,7 +26,6 @@ class News extends Model
     $attribute_name = "avatar";
     $disk = 'uploads'; // or use your own disk, defined in config/filesystems.php
     $destination_path = "/images"; // path relative to the disk above
-
   // if the image was erased
     if ($value==null) {
       // delete the image from disk

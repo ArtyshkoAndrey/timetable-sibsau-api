@@ -10,7 +10,7 @@ class PostController extends Controller {
   public function all() {
     return  response()
       ->json(
-        News::all()->with('user')->toArray()
+        News::all()->toArray()
       )
       ->header('Content-Type', 'application/json')
       ->header('charset', 'utf-8');
@@ -19,7 +19,7 @@ class PostController extends Controller {
     // dd(News::where('id', $id)->with('user')->first()->toArray());
     return  response()
       ->json(
-        News::where('id', $id)->with('user')->first()->toArray()
+        News::where('id', $id)->first()->toArray()
       )
       ->header('Content-Type', 'application/json')
       ->header('charset', 'utf-8');
