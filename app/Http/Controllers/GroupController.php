@@ -117,9 +117,9 @@ class GroupController extends Controller
       ->header('charset', 'utf-8');
   }
 
-  public function searchGroup ($text) {
+  public function searchGroup ($text, $count) {
     // dd('%'.$text.'%');
-    $groups = Group::where('name', 'LIKE','%'.$text.'%')->get();
+    $groups = Group::where('name', 'LIKE','%'.$text.'%')->take($number)->get();
     return  response()
       ->json([
         'groups' => $groups->toArray(),
