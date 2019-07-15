@@ -57,27 +57,35 @@ class GroupController extends Controller
         $day->name = $key;
         $day->lessons = array();
         $lessonsKeyDay = $lessonsFirstWeek->where('day', ['index' => $value, 'name' => $key]);
-        $lessonsKeyDay->sortBy(function ($lesson, $key) {
-          return (int) $lesson->time['start'];
-        });
-        // dd($lessonsKeyDay->toArray());
-        $lessonsKeyDay = $lessonsKeyDay->values();
-        for ($i = 0; $i < count($lessonsKeyDay); $i++) {
-          if (isset($lessonsKeyDay[$i + 1])) {
-            if ($lessonsKeyDay[$i + 1]->prefLesson_id !== 0) {
-              $lessonsWithPref = array();
-              $lesson = (object) array();
-              $lesson = $lessonsKeyDay[$i]->toArray();
-              $lesson['group'] = $lessonsKeyDay[$i]->group->name;
-              $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
-              array_push($lessonsWithPref, $lesson);
-              $lesson = (object) array();
-              $lesson = $lessonsKeyDay[$i + 1]->toArray();
-              $lesson['group'] = $lessonsKeyDay[$i + 1]->group->name;
-              $lesson['teacher'] = $lessonsKeyDay[$i + 1]->teacher->initials_name;
-              array_push($lessonsWithPref, $lesson);
-              array_push($day->lessons, $lessonsWithPref);
-              $i++;
+        if (count($lessonsKeyDay) > 0) {
+          $lessonsKeyDay->sortBy(function ($lesson, $key) {
+            return (int) $lesson->time['start'];
+          });
+          // dd($lessonsKeyDay->toArray());
+          $lessonsKeyDay = $lessonsKeyDay->values();
+          for ($i = 0; $i < count($lessonsKeyDay); $i++) {
+            if (isset($lessonsKeyDay[$i + 1])) {
+              if ($lessonsKeyDay[$i + 1]->prefLesson_id !== 0) {
+                $lessonsWithPref = array();
+                $lesson = (object) array();
+                $lesson = $lessonsKeyDay[$i]->toArray();
+                $lesson['group'] = $lessonsKeyDay[$i]->group->name;
+                $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
+                array_push($lessonsWithPref, $lesson);
+                $lesson = (object) array();
+                $lesson = $lessonsKeyDay[$i + 1]->toArray();
+                $lesson['group'] = $lessonsKeyDay[$i + 1]->group->name;
+                $lesson['teacher'] = $lessonsKeyDay[$i + 1]->teacher->initials_name;
+                array_push($lessonsWithPref, $lesson);
+                array_push($day->lessons, $lessonsWithPref);
+                $i++;
+              } else {
+                $lesson = (object) array();
+                $lesson = $lessonsKeyDay[$i]->toArray();
+                $lesson['group'] = $lessonsKeyDay[$i]->group->name;
+                $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
+                array_push($day->lessons, $lesson);
+              }
             } else {
               $lesson = (object) array();
               $lesson = $lessonsKeyDay[$i]->toArray();
@@ -85,15 +93,9 @@ class GroupController extends Controller
               $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
               array_push($day->lessons, $lesson);
             }
-          } else {
-            $lesson = (object) array();
-            $lesson = $lessonsKeyDay[$i]->toArray();
-            $lesson['group'] = $lessonsKeyDay[$i]->group->name;
-            $lesson['teacher'] = $lessonsKeyDay[$i]->teacher->initials_name;
-            array_push($day->lessons, $lesson);
           }
+          array_push($days[$j], $day);
         }
-        array_push($days[$j], $day);
       }
     }
     // dd($days);
