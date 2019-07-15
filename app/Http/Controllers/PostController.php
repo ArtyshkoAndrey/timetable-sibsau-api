@@ -10,7 +10,7 @@ class PostController extends Controller {
   public function all() {
     return  response()
       ->json(
-        News::all()->toArray()
+        News::orderBy('created_at', 'desc')->get()->toArray()
       )
       ->header('Content-Type', 'application/json')
       ->header('charset', 'utf-8');
