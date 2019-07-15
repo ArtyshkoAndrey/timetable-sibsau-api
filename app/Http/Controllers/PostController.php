@@ -16,6 +16,7 @@ class PostController extends Controller {
       ->header('charset', 'utf-8');
   }
   public function post($id) {
+    dd(News::where('id', $id)->with('user')->first()->toArray());
     return  response()
       ->json(
         News::where('id', $id)->first()->toArray()

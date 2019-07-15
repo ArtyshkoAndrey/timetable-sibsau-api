@@ -39,6 +39,14 @@ class NewsCrudController extends CrudController
           'upload' => true,
           'disk' => 'uploads'
         ],'both');
+        $this->crud->addField([
+          'label' => "User",
+           'type' => 'select2',
+           'name' => 'user_id', // the db column for the foreign key
+           'entity' => 'user', // the method that defines the relationship in your Model
+           'attribute' => 'name', // foreign key attribute that is shown to user
+           'model' => "App\Models\BackpackUser" // foreign key model
+         ]);
 
         // TODO: remove setFromDb() and manually define Fields and Columns
         $this->crud->setFromDb();

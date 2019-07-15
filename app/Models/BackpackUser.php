@@ -33,4 +33,12 @@ class BackpackUser extends User
     {
         return $this->email;
     }
+    public static function boot()
+    {
+      parent::boot();
+      static::updating(function($model)
+      {
+        $model->avatar = 'https://s.gravatar.com/avatar/'. md5($model->email) .'?s=80';
+      });
+    }
 }

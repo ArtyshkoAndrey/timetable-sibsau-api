@@ -36,4 +36,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    protected $appends = array('avatar');
+    // protected $with = ['avatar'];
+
+    public function getAvatarAttribute() {
+      return 'https://s.gravatar.com/avatar/'. md5($this->email) .'?s=80';
+    }
+
+    public static function boot()
+    {
+      parent::boot();
+      static::updating(function($model)
+      {
+        $model->avatar = 'https://s.gravatar.com/avatar/'. md5($model->email) .'?s=80';
+      });
+    }
 }

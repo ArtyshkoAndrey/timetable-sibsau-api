@@ -15,6 +15,12 @@ class News extends Model
   protected $primaryKey = 'id';
   // protected $guarded = ['id'];
   protected $fillable = ['title','summary','body','avatar', 'user_id'];
+
+  public function user()
+  {
+    return $this->hasOne('App\Models\BackpackUser', 'id', 'user_id');
+  }
+
   public function setAvatarAttribute($value) {
     // dd(123);
     $attribute_name = "avatar";
