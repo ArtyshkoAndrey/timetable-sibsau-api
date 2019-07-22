@@ -130,6 +130,29 @@ class LessonsCrudController extends CrudController
           $countWeek++;
         }
       }
+      $msg = array (
+        "title" =>"Расписание обновлено",
+        "message" => "Зайдите в приложение для обновления расписания"
+      );
+      $fields = array (
+        "to" => "/topics/allDevice",
+        'data'  => $msg,
+        "notification" =>array("title" => "Доступно новое расписание", "body" => "Зайдите и загрузите новое расписание, что бы оставаться с актуальным расписанием даже в оффлайн", "sound" => "default")
+      );
+
+      $headers = array (
+        'Authorization: key=' . 'AAAAB42lrsY:APA91bE8gsm3g16tb3jAGMxZTIpvIfVRQzC3aYYut4RUDrfd7wmlPtCIg7vORB1O6ssQjYzMYOaynvxRY9xjbR5huG-g2LlIDOBv3bQQBD-QzZ-zDhao6A8wzIDjQ0JNunscC5GKqEcS',
+        'Content-Type: application/json'
+
+      $ch = curl_init();
+      curl_setopt( $ch,CURLOPT_URL, 'https://android.googleapis.com/gcm/send' );
+      curl_setopt( $ch,CURLOPT_POST, true );
+      curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+      curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+      curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+      curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+      $result = curl_exec($ch );
+      curl_close( $ch );
       return redirect(backpack_url('lessons'));
     }
     public function store(StoreRequest $request)
