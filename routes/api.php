@@ -20,4 +20,7 @@ Route::middleware('api')->group(function () {
   Route::get('/group/search/{text}/{count}', 'GroupController@searchGroup');
   Route::get('/parse/group/{id}', 'ParseController@group');
   Route::get('/parse/teacher/{id}', 'ParseController@teacher');
+  Route::get('/dateupdate', function() {
+    return('2019-08-13 20:15:19.535387');
+  });
 });
