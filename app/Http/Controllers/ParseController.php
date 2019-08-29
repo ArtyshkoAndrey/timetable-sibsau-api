@@ -122,33 +122,35 @@ class ParseController extends Controller
 
   public function group($group_id) {
     // $group = Group::where('id',  '=', $group_id )->first();
-    $html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/'.$group_id);
-    $crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/'.$group_id);
-    $crawler->addHtmlContent($html, 'UTF-8');
-    $days = array();
-    try {
-      $days[0] = $this->getTimettableForWeekGroup(1, $crawler);
-    } catch (\InvalidArgumentException $e) {
-      $days[0] = null;
+    if (@file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/'.$group_id)) {
+	    $html = file_get_contents('https://timetable.pallada.sibsau.ru/timetable/group/'.$group_id);
+	    $crawler = new Crawler(null, 'https://timetable.pallada.sibsau.ru/timetable/group/'.$group_id);
+	    $crawler->addHtmlContent($html, 'UTF-8');
+	    $days = array();
+	    try {
+	      $days[0] = $this->getTimettableForWeekGroup(1, $crawler);
+	    } catch (\InvalidArgumentException $e) {
+	      $days[0] = null;
+	    }
+	    try {
+	      $days[1] = $this->getTimettableForWeekGroup(2, $crawler);
+	    } catch (\InvalidArgumentException $e) {
+	      $days[1] = null;
+	    }
+	    try {
+	      $exams = $this->getTimettableForExamGroup($crawler);
+	    } catch (\InvalidArgumentException $e) {
+	      $exams = null;
+	    }
+	    return  response()
+	      ->json([
+	        'group' => $group_id,
+	        'timetable' => $days,
+	        'exams' => $exams
+	      ])
+	      ->header('Content-Type', 'application/json')
+	      ->header('charset', 'utf-8');
     }
-    try {
-      $days[1] = $this->getTimettableForWeekGroup(2, $crawler);
-    } catch (\InvalidArgumentException $e) {
-      $days[1] = null;
-    }
-    try {
-      $exams = $this->getTimettableForExamGroup($crawler);
-    } catch (\InvalidArgumentException $e) {
-      $exams = null;
-    }
-    return  response()
-      ->json([
-        'group' => $group_id,
-        'timetable' => $days,
-        'exams' => $exams
-      ])
-      ->header('Content-Type', 'application/json')
-      ->header('charset', 'utf-8');
   }
 
   private function getTimettableForWeekTeacher($num, $crawler) {

@@ -43,7 +43,7 @@ class LessonsCrudController extends CrudController
         $this->crud->addColumn(['name' => 'group_id', 'label' => 'Group', 'type' => 'select', 'entity' => 'group', 'attribute' => "name", 'model' => "App\Group", ]);
         $this->crud->addColumn(['name' => 'teacher_id', 'label' => 'Teacher', 'type' => 'select', 'entity' => 'teacher', 'attribute' => "initials_name", 'model' => "App\Teacher", ]);
         $this->crud->addColumn(['name' => 'type', 'type' => 'text', 'label' => 'Type']);
-        $this->crud->setFromDb();
+        // $this->crud->setFromDb();
 
         // add asterisk for fields that are required in LessonRequest
         $this->crud->setRequiredFields(StoreRequest::class, 'create');
@@ -57,78 +57,87 @@ class LessonsCrudController extends CrudController
       $parser = new ParseController();
       $groups = Group::all();
       foreach ($groups as $group) {
-        $timetable = json_decode(json_encode($parser->group($group->id)))->original;
-        $countDay = 1;
-        $countWeek = 1;
-        if ($timetable->timetable)
-        foreach ($timetable->timetable as $week) {
-          foreach ($week as $day) {
-            foreach ($day->lessons as $lesson) {
-              if(!is_array($lesson)) {
-                $teacher_id = explode('/', $lesson->teacherlink);
-                $teacher_id = $teacher_id[count($teacher_id) - 1];
-                $dbLesson = new Lesson();
-                $dbLesson->name = $lesson->name;
-                $dbLesson->group_id = $group->id;
-                $dbLesson->teacher_id = $teacher_id;
-                $dbLesson->audience = $lesson->audience;
-                $dbLesson->time = [
-                  'end' => $lesson->time[1],
-                  'start' => $lesson->time[0]
-                ];
-                $dbLesson->type = $lesson->type;
-                $dbLesson->week = $countWeek;
+      	try {
+      		if (isset(json_decode(json_encode($parser->group($group->id)))->original)) {
+		        $timetable = json_decode(json_encode($parser->group($group->id)))->original;
+		        $countDay = 1;
+		        $countWeek = 1;
+		        if ($timetable->timetable)
+		        foreach ($timetable->timetable as $week) {
+		        	// var_dump($week);
+		        	if (!is_null($week)) {
+				          foreach ($week as $day) {
+				            foreach ($day->lessons as $lesson) {
+				              if(!is_array($lesson)) {
+				                $teacher_id = explode('/', $lesson->teacherlink);
+				                $teacher_id = $teacher_id[count($teacher_id) - 1];
+				                $dbLesson = new Lesson();
+				                $dbLesson->name = $lesson->name;
+				                $dbLesson->group_id = $group->id;
+				                $dbLesson->teacher_id = $teacher_id;
+				                $dbLesson->audience = $lesson->audience;
+				                $dbLesson->time = [
+				                  'end' => $lesson->time[1],
+				                  'start' => $lesson->time[0]
+				                ];
+				                $dbLesson->type = $lesson->type;
+				                $dbLesson->week = $countWeek;
 
-                $dbLesson->day = [
-                  'name' => $day->nameDay,
-                  'index' => $day->index
-                ];
-                if (isset($lesson->subGroup)) {
-                  $dbLesson->subgroup = $lesson->subGroup;
-                }
-                $dbLesson->prefLesson_id = 0;
-                $dbLesson->lesson_image_id = 1;
-                $dbLesson->save();
-              } else {
-                for ($i = 0; $i < count($lesson); $i++) {
-                  $teacher_id = explode('/', $lesson[$i]->teacherlink);
-                  $teacher_id = $teacher_id[count($teacher_id) - 1];
-                  $dbLesson = new Lesson();
-                  $dbLesson->name = $lesson[$i]->name;
-                  $dbLesson->group_id = $group->id;
-                  $dbLesson->teacher_id = $teacher_id;
-                  $dbLesson->audience = $lesson[$i]->audience;
-                  $dbLesson->time = [
-                    'end' => $lesson[$i]->time[1],
-                    'start' => $lesson[$i]->time[0]
-                  ];
-                  $dbLesson->type = $lesson[$i]->type;
-                  $dbLesson->week = $countWeek;
+				                $dbLesson->day = [
+				                  'name' => $day->nameDay,
+				                  'index' => $day->index
+				                ];
+				                if (isset($lesson->subGroup)) {
+				                  $dbLesson->subgroup = $lesson->subGroup;
+				                }
+				                $dbLesson->prefLesson_id = 0;
+				                $dbLesson->lesson_image_id = 1;
+				                $dbLesson->save();
+				              } else {
+				                for ($i = 0; $i < count($lesson); $i++) {
+				                  $teacher_id = explode('/', $lesson[$i]->teacherlink);
+				                  $teacher_id = $teacher_id[count($teacher_id) - 1];
+				                  $dbLesson = new Lesson();
+				                  $dbLesson->name = $lesson[$i]->name;
+				                  $dbLesson->group_id = $group->id;
+				                  $dbLesson->teacher_id = $teacher_id;
+				                  $dbLesson->audience = $lesson[$i]->audience;
+				                  $dbLesson->time = [
+				                    'end' => $lesson[$i]->time[1],
+				                    'start' => $lesson[$i]->time[0]
+				                  ];
+				                  $dbLesson->type = $lesson[$i]->type;
+				                  $dbLesson->week = $countWeek;
 
-                  $dbLesson->day = [
-                    'name' => $day->nameDay,
-                    'index' => $day->index
-                  ];
-                  if (isset($lesson[$i]->subGroup)) {
-                    $dbLesson->subgroup = $lesson[$i]->subGroup;
-                  }
-                  if ($i > 0) {
-                    $dbLesson->prefLesson_id = $prefId;
-                  } else {
-                    $dbLesson->prefLesson_id = 0;
-                  }
-                  $dbLesson->lesson_image_id = 1;
-                  $dbLesson->save();
-                  if ($i !== count($lesson) - 1) {
-                    $prefId = $dbLesson->id;
-                  }
-                }
-              }
-            }
-            $countDay++;
-          }
-          $countWeek++;
-        }
+				                  $dbLesson->day = [
+				                    'name' => $day->nameDay,
+				                    'index' => $day->index
+				                  ];
+				                  if (isset($lesson[$i]->subGroup)) {
+				                    $dbLesson->subgroup = $lesson[$i]->subGroup;
+				                  }
+				                  if ($i > 0) {
+				                    $dbLesson->prefLesson_id = $prefId;
+				                  } else {
+				                    $dbLesson->prefLesson_id = 0;
+				                  }
+				                  $dbLesson->lesson_image_id = 1;
+				                  $dbLesson->save();
+				                  if ($i !== count($lesson) - 1) {
+				                    $prefId = $dbLesson->id;
+				                  }
+				                }
+				              }
+				            }
+				            $countDay++;
+				          }
+		        	}
+		          $countWeek++;
+		        }
+      		}
+      	} catch(Exception $e) {
+      		dump($e);
+      	}
       }
       $msg = array (
         "title" =>"Расписание обновлено",
@@ -142,10 +151,10 @@ class LessonsCrudController extends CrudController
 
       $headers = array (
         'Authorization: key=' . 'AAAAB42lrsY:APA91bE8gsm3g16tb3jAGMxZTIpvIfVRQzC3aYYut4RUDrfd7wmlPtCIg7vORB1O6ssQjYzMYOaynvxRY9xjbR5huG-g2LlIDOBv3bQQBD-QzZ-zDhao6A8wzIDjQ0JNunscC5GKqEcS',
-        'Content-Type: application/json'
+        'Content-Type: application/json');
 
       $ch = curl_init();
-      curl_setopt( $ch,CURLOPT_URL, 'https://android.googleapis.com/gcm/send' );
+      curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
       curl_setopt( $ch,CURLOPT_POST, true );
       curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
       curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
