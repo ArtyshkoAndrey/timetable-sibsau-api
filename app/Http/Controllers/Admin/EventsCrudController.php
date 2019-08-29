@@ -65,7 +65,6 @@ class EventsCrudController extends CrudController
       curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
       $result = curl_exec($ch );
       curl_close( $ch );
-      your additional operations after save here
       use $this->data['entry'] or $this->crud->entry
       return $redirect_location;
   }
