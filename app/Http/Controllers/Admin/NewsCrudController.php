@@ -48,6 +48,11 @@ class NewsCrudController extends CrudController
            'attribute' => 'name', // foreign key attribute that is shown to user
            'model' => "App\Models\BackpackUser" // foreign key model
          ]);
+         $this->crud->addField([
+           'label' => "Body",
+           'name' => 'body',
+           'type' => 'tinymce'
+          ]);
 
         // TODO: remove setFromDb() and manually define Fields and Columns
         $this->crud->setFromDb();
