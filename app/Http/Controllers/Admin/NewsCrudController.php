@@ -53,9 +53,9 @@ class NewsCrudController extends CrudController
            'name' => 'body',
            'type' => 'tinymce'
           ]);
-          $this->crud->addColumn([
-            'name' => 'body',
-            'hidden' => true,
+          $this->crud->setColumns([
+            ['name' => 'title',
+            'label' => 'Title',]
           ]);
 
         // TODO: remove setFromDb() and manually define Fields and Columns
