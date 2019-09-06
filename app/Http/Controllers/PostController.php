@@ -7,6 +7,16 @@ class PostController extends Controller {
   public function __construct() {
 
   }
+  public function test() {
+    $count = count(News::all());
+    $c = rand(1, $count);
+    return  response()
+      ->json(
+        News::take($c)->get()->toArray()
+      )
+      ->header('Content-Type', 'application/json')
+      ->header('charset', 'utf-8');
+  }
   public function all() {
     return  response()
       ->json(
