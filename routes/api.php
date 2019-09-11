@@ -20,6 +20,7 @@ Route::middleware('api')->group(function () {
   Route::get('/events', 'EventController@all');
   Route::get('/post/{id}', 'PostController@post');
   Route::get('/group/search/{text}/{count}', 'GroupController@searchGroup');
+  Route::get('/teacher/search/{text}/{count}', 'TeacherController@searchTeacher');
   Route::get('/parse/group/{id}', 'ParseController@group');
   Route::get('/parse/teacher/{id}', 'ParseController@teacher');
   Route::get('/notify', function() {
