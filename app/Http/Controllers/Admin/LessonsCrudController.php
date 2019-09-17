@@ -11,6 +11,7 @@ use Backpack\CRUD\CrudPanel;
 use App\Http\Controllers\ParseController;
 use App\Lesson;
 use App\Group;
+
 /**
  * Class LessonCrudController
  * @package App\Http\Controllers\Admin

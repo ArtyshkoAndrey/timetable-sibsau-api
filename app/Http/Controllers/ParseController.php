@@ -71,7 +71,7 @@ class ParseController extends Controller
     return $exams;
   }
 
-  private function getTimettableForWeekGroup($num, $crawler) {
+  public function getTimettableForWeekGroup($num, $crawler) {
     global $days, $count;
     $days = array();
     $count = 0;
