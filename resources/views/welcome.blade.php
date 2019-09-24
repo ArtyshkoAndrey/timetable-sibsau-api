@@ -4,6 +4,7 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="yandex-verification" content="3ed5ebe8e9e0cc17" />
+		<meta name="google-site-verification" content="LFBlAYQ6J4HSl0WHgS0PV_RXE0VBG8XQubxgy7OOEGY" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" href="{{asset('landing/img/icon/logo.png')}}" type="image/png">
         <title>Мобильное приложение Мой СибГУ им. М. Ф. Решетнева</title>
