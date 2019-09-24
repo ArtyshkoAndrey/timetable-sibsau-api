@@ -3,6 +3,7 @@
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
+        <meta name="yandex-verification" content="3ed5ebe8e9e0cc17" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" href="{{asset('landing/img/icon/logo.png')}}" type="image/png">
         <title>Мобильное приложение Мой СибГУ им. М. Ф. Решетнева</title>
@@ -113,7 +114,7 @@
         			<div class="col-lg-5 offset-lg-1">
         				<div class="interior_text">
         					<h4>Современный дизай</h4>
-        					p>В нашем приложении интуитивно понятный интерфейс. Студенты любий специальностей получат самое свежже расписание в котором достаточно легко ориентироваться. А новые технологии помогли создать приложение таким, как его видят студенты различных специальностей</p>
+        					<p>В нашем приложении интуитивно понятный интерфейс. Студенты любий специальностей получат самое свежже расписание в котором достаточно легко ориентироваться. А новые технологии помогли создать приложение таким, как его видят студенты различных специальностей</p>
         					<a class="main_btn" href="https://play.google.com/store/apps/details?id=ru.artyshko.timetable">Скачать</a>
         				</div>
         			</div>
