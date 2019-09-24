@@ -58,9 +58,10 @@
       				<div class="container">
       					<div class="row banner_content">
       						<div class="col-lg-9">
+							  	<h1>Мой СибГУ</h1>
       							<h2>Лучшее приложение <br/>для СибГУ им. М.Ф.Решетнева</h2>
-      							<a class="banner_btn" href="https://play.google.com/store/apps/details?id=ru.artyshko.timetable">Скачать Android</a>
-                    <a class="btn banner_btn disabled" style="border: none; vertical-align:baseline;" href="#" disabled="disabled">Скачать IOS</a>
+      							<a class="banner_btn btn d-md-inline-block d-block" style="border: none; vertical-align:baseline;" href="https://play.google.com/store/apps/details?id=ru.artyshko.timetable">Скачать Android</a>
+                    			<a class="btn banner_btn disabled d-md-inline-block d-block mt-md-0 mt-2" style="border: none; vertical-align:baseline;" href="#" disabled="disabled">Скачать IOS</a>
       						</div>
       						<div class="col-lg-3">
       							<div class="banner_map_img">
