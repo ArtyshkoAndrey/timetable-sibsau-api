@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
     <head>
         <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="yandex-verification" content="3ed5ebe8e9e0cc17" />
+        <meta http-equiv="Content-Type" content="text/html; charset="utf-8">
+		<meta name="description" content="Мой СибГУ. Оффиуиальной приложение для Сибирского Государственного университета им. М. Ф. Решетнева. Мобильное приложение, онлайн распиание и новости СибГУ (СибГАУ и СибГТУ)">
+        <meta name="Keywords" content="СибГУ, Решетнева, Мой СибГУ, мобильное приложение, паллада, pallada, онлайн расписание сибгу"> 
+		<meta name="yandex-verification" content="3ed5ebe8e9e0cc17" />
 		<meta name="google-site-verification" content="LFBlAYQ6J4HSl0WHgS0PV_RXE0VBG8XQubxgy7OOEGY" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" href="{{asset('landing/img/icon/logo.png')}}" type="image/png">
