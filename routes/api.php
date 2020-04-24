@@ -34,12 +34,12 @@ Route::middleware('api')->group(function () {
     }
     $multi_curl = new MultiCurl();
     // $multi_curl->setProxy('167.71.103.168', '3128');
-    $multi_curl->setConcurrency(20);
+    $multi_curl->setConcurrency(40);
     $multi_curl->setConnectTimeout(100);
     $multi_curl->setTimeout(100);
     $multi_curl->success(function ($instance) {
       // dd($instance);
-      usleep(2000);
+      // usleep(2000);
       echo 'call to "' . $instance->url . '" was successful.' . "\n";
       $arr_url=explode("/",$instance->url);
       $parse = new App\Http\Controllers\ParseController();

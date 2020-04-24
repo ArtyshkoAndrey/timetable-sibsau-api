@@ -75,7 +75,7 @@ class NewsCrudController extends CrudController
           "title" =>"Новая запись",
         );
         $fields = array (
-          "to" => "/topics/allDevice",
+          "to" => "/topics/notificationsDevelopTest",
           'data'  => $msg,
           "notification" =>array("title" => "Новая запись", "body" => "Добавлена новая запись от " . User::where('id', $request->user_id)->first()->name, "sound" => "default", "click_action" => "FLUTTER_NOTIFICATION_CLICK")
         );
